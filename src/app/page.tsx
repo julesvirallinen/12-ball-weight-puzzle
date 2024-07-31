@@ -13,6 +13,12 @@ interface WeighingResult {
   result: number;
 }
 
+const Results = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+`;
+
 const Footer = styled.footer`
   margin-top: auto;
 `;
@@ -91,18 +97,17 @@ const initBalls = () => {
   })).map((ball) => ({
     ...ball,
     weight:
-      ball.index === randomBallIndex ? (Math.random() > 0.5 ? 0.01 : -0.01) : 0,
+      ball.index === randomBallIndex ? (Math.random() > 0.5 ? 0.01 : -0.01) : 1,
   }));
 };
 
 export default function Home() {
-  const [selectedScaleArea, setSelectedScaleArea] = useState<number | null>(
-    null
-  );
+  const [selectedScaleArea, setSelectedScaleArea] = useState<number | null>(1);
   const [ballsInScale, setBallsInScale] = useState<[Ball[], Ball[]]>([[], []]);
   const [results, setResults] = useState<WeighingResult[]>([]);
   const [balls] = useState(initBalls);
   const [isGuessCorrect, setIsGuessCorrect] = useState<boolean | null>(null);
+  const funkyBall = balls.find((ball) => ball.weight !== 1);
 
   const onBallClick = (ball: Ball) => {
     if (selectedScaleArea === null) return;
@@ -244,7 +249,7 @@ export default function Home() {
           </ResultHistory>
         </>
       )}
-      {results.length > 1 && (
+      {isGuessCorrect === null && results.length > 1 && (
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -263,6 +268,12 @@ export default function Home() {
       )}
       {isGuessCorrect !== null && (
         <div>{isGuessCorrect ? "Correct!" : "Incorrect!"}</div>
+      )}
+      {isGuessCorrect !== null && funkyBall && (
+        <Results>
+          <Ball ball={funkyBall} /> is{" "}
+          {funkyBall.weight > 0 ? "heavier" : "lighter"}
+        </Results>
       )}
       <Footer>c jules jne</Footer>
     </StyledGame>
