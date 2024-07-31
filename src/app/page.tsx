@@ -13,9 +13,14 @@ interface WeighingResult {
   result: number;
 }
 
+const Footer = styled.footer`
+  margin-top: auto;
+`;
+
 const Balls = styled.div`
   display: flex;
   gap: 10px;
+  min-height: 3.4rem;
 `;
 
 const StyledBall = styled.div<{ index: number }>`
@@ -31,27 +36,40 @@ const StyledBall = styled.div<{ index: number }>`
   cursor: pointer;
 `;
 
-const Scale = styled.div`
+const Scale = styled.div<{ tilt?: number }>`
   display: flex;
+  align-items: center;
   gap: 10px;
+  transform: rotate(${({ tilt }) => tilt || 0}deg);
+  transform-origin: bottom center;
 `;
 
 const ScaleArea = styled.div<{ isSelected: boolean }>`
   display: flex;
   flex-wrap: wrap;
   width: 20rem;
-  min-height: 3rem;
+  min-height: 3.4rem;
   border: 1px solid white;
   background-color: black;
   padding: 0.2rem;
   gap: 0.2rem;
   border-color: ${({ isSelected }) => (isSelected ? "red" : "white")};
+  border-top: 0;
+  box-sizing: border-box;
 `;
 
 const StyledGame = styled.div`
+  padding: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2rem;
+  min-height: 100vh;
+`;
+
+const ResultHistory = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 `;
 
 const Ball: FC<{ ball: Ball; onClick?: () => void }> = ({ ball, ...rest }) => {
@@ -69,7 +87,7 @@ const initBalls = () => {
 
   return Array.from({ length: 12 }, (_, i) => ({
     index: i + 1,
-    weight: 0,
+    weight: 1,
   })).map((ball) => ({
     ...ball,
     weight:
@@ -126,11 +144,14 @@ export default function Home() {
       return acc + ball.weight;
     }, 0);
 
+    const diff = aWeight - bWeight;
+    const comparator = diff > 0 ? 1 : diff < 0 ? -1 : 0;
+
     setResults((prev) => [
       ...prev,
       {
         balls: ballsInScale,
-        result: aWeight - bWeight,
+        result: comparator,
       },
     ]);
     setBallsInScale([[], []]);
@@ -151,6 +172,11 @@ export default function Home() {
 
   return (
     <StyledGame>
+      <h4>Balance Scale Game</h4>
+      <p>
+        There are 12 balls. One is heavier or lighter than the rest. Can you
+        find the anomaly in 3 weighings?
+      </p>
       <Balls>
         {ballsNotInScale.map((ball) => (
           <Ball
@@ -191,9 +217,9 @@ export default function Home() {
       {results.length > 0 && (
         <>
           Previous results:
-          {results.map((result, i) => (
-            <div key={i}>
-              <Scale>
+          <ResultHistory>
+            {results.map((result, i) => (
+              <Scale tilt={-result.result} key={i}>
                 <ScaleArea isSelected={false}>
                   {result.balls[0].map((ball) => (
                     <Ball
@@ -214,8 +240,8 @@ export default function Home() {
                   ))}
                 </ScaleArea>
               </Scale>
-            </div>
-          ))}
+            ))}
+          </ResultHistory>
         </>
       )}
       {results.length > 1 && (
@@ -238,6 +264,7 @@ export default function Home() {
       {isGuessCorrect !== null && (
         <div>{isGuessCorrect ? "Correct!" : "Incorrect!"}</div>
       )}
+      <Footer>c jules jne</Footer>
     </StyledGame>
   );
 }
