@@ -97,7 +97,7 @@ const initBalls = () => {
   })).map((ball) => ({
     ...ball,
     weight:
-      ball.index === randomBallIndex ? (Math.random() > 0.5 ? 0.01 : -0.01) : 1,
+      ball.index === randomBallIndex ? (Math.random() > 0.5 ? 1.01 : 0.99) : 1,
   }));
 };
 
@@ -170,8 +170,8 @@ export default function Home() {
     const fakeBall = balls.find((ball) => ball.index == guessedBall);
     if (!fakeBall) return;
     const isCorrect =
-      (fakeBall.weight > 0 && guessedWeight === "heavier") ||
-      (fakeBall.weight < 0 && guessedWeight === "lighter");
+      (fakeBall.weight > 1 && guessedWeight === "heavier") ||
+      (fakeBall.weight < 1 && guessedWeight === "lighter");
     setIsGuessCorrect(isCorrect);
   };
 
