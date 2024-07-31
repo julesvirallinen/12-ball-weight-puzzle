@@ -22,9 +22,9 @@ const StyledBall = styled.div<{ index: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50px;
-  width: 50px;
-  height: 50px;
+  border-radius: 3rem;
+  width: 3rem;
+  height: 3rem;
   background-color: ${({ index }) => `hsl(${index * 30}, 50%, 50%)`};
 
   user-select: none; /* Standard syntax */
@@ -40,10 +40,11 @@ const ScaleArea = styled.div<{ isSelected: boolean }>`
   display: flex;
   flex-wrap: wrap;
   width: 20rem;
-  height: 10rem;
+  min-height: 3rem;
   border: 1px solid white;
   background-color: black;
-
+  padding: 0.2rem;
+  gap: 0.2rem;
   border-color: ${({ isSelected }) => (isSelected ? "red" : "white")};
 `;
 
@@ -134,7 +135,6 @@ export default function Home() {
     ]);
     setBallsInScale([[], []]);
   };
-  console.log(results);
 
   // @ts-expect-error
   const onFormSubmit = (e) => {
